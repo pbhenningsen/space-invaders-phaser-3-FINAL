@@ -5,7 +5,7 @@ import { Kaboom } from "../kaboom";
 export class AssetManager {
     bullets: Phaser.Physics.Arcade.Group;
     enemyBullets: Phaser.Physics.Arcade.Group;
-    explosions: Phaser.Physics.Arcade.Group;
+    explosions: Phaser.GameObjects.Group;
 
     constructor(private _scene: Phaser.Scene) {
         this.bullets = this._createBullets();
@@ -14,43 +14,37 @@ export class AssetManager {
     }
 
     gameOver() {
-        this.enemyBullets.clear(true, true)
-        this.bullets.clear(true, true)
+        this.enemyBullets.clear(true, true);
+        this.bullets.clear(true, true);
     }
 
     reset() {
-        this._createEnemyBullets();
-        this._createBullets();
+        this.enemyBullets.clear(true, true);
+        this.bullets.clear(true, true);
+        this.explosions.clear(true, true);
     }
 
     private _createEnemyBullets(): Phaser.Physics.Arcade.Group {
-        let enemyBullets = this._scene.physics.add.group({
-            max: 0,
+        return this._scene.physics.add.group({
+            maxSize: 5,
             classType: EnemyBullet,
             runChildUpdate: true
         });
-        enemyBullets.setOrigin(0.5, 1);
-        return enemyBullets;
     }
 
     private _createBullets(): Phaser.Physics.Arcade.Group {
-        let bullets = this._scene.physics.add.group({
-            max: 0,
+        return this._scene.physics.add.group({
+            maxSize: 1,
             classType: Bullet,
             runChildUpdate: true
         });
-        bullets.setOrigin(0.5, 1);
-        return bullets;
     }
 
-    private _createExplosions(): Phaser.Physics.Arcade.Group {
-        let explosions = this._scene.physics.add.group({
-            max: 0,
+    private _createExplosions(): Phaser.GameObjects.Group {
+        return this._scene.add.group({
+            maxSize: 20,
             classType: Kaboom,
             runChildUpdate: true
         });
-
-        return explosions;
     }
-
 }

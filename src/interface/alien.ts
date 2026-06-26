@@ -1,19 +1,22 @@
 import { AssetType, SoundType } from "./assets";
-import { AnimationType } from "./factory/animation-factory";
 import { Kaboom } from "./kaboom";
 
 export class Alien extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, AssetType.Alien)
-  }
-
-  kill(explosion: Kaboom) {
-    if (explosion) {
-      explosion.setX(this.x);
-      explosion.setY(this.y);
-      explosion.play(AnimationType.Kaboom)
-      this.scene.sound.play(SoundType.InvaderKilled)
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        texture: string = AssetType.Ufo1
+    ) {
+        super(scene, x, y, texture);
     }
-    this.destroy();
-  }
+
+    kill(explosion?: Kaboom) {
+        if (explosion) {
+            explosion.show(this.x, this.y);
+        }
+
+        this.scene.sound.play(SoundType.InvaderKilled);
+        this.destroy();
+    }
 }

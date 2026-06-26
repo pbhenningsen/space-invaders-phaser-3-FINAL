@@ -1,10 +1,21 @@
 export enum AssetType {
     Bullet = "bullet",
     EnemyBullet = "enemyBullet",
-    Alien = "alien",
     Ship = "ship",
     Kaboom = "kaboom",
     Starfield = "starfield",
+    Barrier = "barrier",
+
+    Ufo1 = "ufo1",
+    Ufo2 = "ufo2",
+    Ufo3 = "ufo3",
+    Ufo4 = "ufo4",
+    Ufo5 = "ufo5",
+    Ufo6 = "ufo6",
+    Ufo7 = "ufo7",
+    Ufo8 = "ufo8",
+    Ufo9 = "ufo9",
+
 }
 
 export enum SoundType {
@@ -12,3 +23,16 @@ export enum SoundType {
     Shoot = "shoot",
     InvaderKilled = "invaderKilled"
 }
+
+export const AlienTextures = [
+    AssetType.Ufo1,
+    AssetType.Ufo2,
+    AssetType.Ufo3,
+    AssetType.Ufo4,
+    AssetType.Ufo5,
+    AssetType.Ufo6,
+    AssetType.Ufo7,
+    AssetType.Ufo8,
+    AssetType.Ufo9,
+
+]
