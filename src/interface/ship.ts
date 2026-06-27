@@ -1,7 +1,7 @@
 import { AssetType } from "./assets";
-import { GAME_WIDTH, GAME_HEIGHT } from "../constants";
+import { GAME_WIDTH, GAME_HEIGHT } from "./constants";
 
-const PLAYER_OFFSET = 50;
+const PLAYER_OFFSET = 100;
 
 export class Ship {
     static create(scene: Phaser.Scene): Phaser.Physics.Arcade.Sprite {

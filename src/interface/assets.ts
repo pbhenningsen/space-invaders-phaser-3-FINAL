@@ -5,6 +5,11 @@ export enum AssetType {
     Kaboom = "kaboom",
     Starfield = "starfield",
     Barrier = "barrier",
+    PlayerDeath = "playerDeath",
+    WoeLogo = "logo",
+    GameLogo = "game-logo",
+    MysteryShip = "mystery-ship",
+    
 
     Ufo1 = "ufo1",
     Ufo2 = "ufo2",
@@ -21,7 +26,17 @@ export enum AssetType {
 export enum SoundType {
     Kaboom = "kaboom",
     Shoot = "shoot",
-    InvaderKilled = "invaderKilled"
+    InvaderKilled = "invaderKilled",
+
+    Bass1 = "bass1",
+    Bass2 = "bass2",
+    Bass3 = "bass3",
+    Bass4 = "bass4",
+
+    Gofast = "gofast",
+    Gimbal = "gimbal",
+
+    UfoHighPitch = "ufoHighPitch",
 }
 
 export const AlienTextures = [

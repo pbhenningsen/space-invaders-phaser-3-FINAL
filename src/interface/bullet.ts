@@ -17,10 +17,6 @@ export class Bullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     shoot(x: number, y: number) {
-        if (this.active) {
-            return;
-        }
-
         this.scene.sound.play(SoundType.Shoot);
 
         this._moveAccumulator = 0;

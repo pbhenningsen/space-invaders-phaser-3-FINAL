@@ -1,4 +1,5 @@
 import { AssetType } from "../assets";
+import { GAME_WIDTH, GAME_HEIGHT } from "../constants"
 
 export class ScoreManager {
   scoreText: Phaser.GameObjects.Text;
@@ -21,7 +22,7 @@ export class ScoreManager {
   private _init() {
     const { width: SIZE_X, height: SIZE_Y } = this._scene.game.canvas;
     const textConfig = {
-      fontFamily: `'Arial', sans-serif`,
+      fontFamily: `'Pixelify Sans', sans-serif`,
       fill: "#ffffff",
     };
     const normalTextConfig = {
@@ -34,8 +35,8 @@ export class ScoreManager {
       fontSize: "36px",
     };
 
-    this._scene.add.text(16, 16, `SCORE`, normalTextConfig);
-    this.scoreText = this._scene.add.text(22, 32, "", normalTextConfig);
+    this._scene.add.text(16, 16, `SCORE:`, normalTextConfig);
+    this.scoreText = this._scene.add.text(75, 16, "", normalTextConfig);
     this.line1Text = this._scene.add
       .text(SIZE_X / 2, 320, "", bigTextConfig)
       .setOrigin(0.5);
@@ -44,35 +45,40 @@ export class ScoreManager {
       .text(SIZE_X / 2, 400, "", bigTextConfig)
       .setOrigin(0.5);
 
-    this._setLivesText(SIZE_X, normalTextConfig);
+    this._setLivesText();
   }
 
-  private _setLivesText(
-    SIZE_X: number,
-    textConfig: { fontSize: string; fontFamily: string; fill: string }
-  ) {
-    this._scene.add.text(SIZE_X - 100, 16, `LIVES`, textConfig);
+ private _setLivesText() {
     this.lives = this._scene.physics.add.group({
-      maxSize: 3,
-      runChildUpdate: true,
+        maxSize: 3,
+        runChildUpdate: true,
     });
+
     this.resetLives();
-  }
+}
 
   resetLives() {
-    let SIZE_X = this._scene.game.canvas.width;
-    this.lives.clear(true, true)
+    this.lives.clear(true, true);
+
+    const startX = 60;
+    const y = GAME_HEIGHT - 20;
+
     for (let i = 0; i < 3; i++) {
-      let ship: Phaser.GameObjects.Sprite = this.lives.create(
-        SIZE_X - 100 + 30 * i,
-        60,
-        AssetType.Ship
-      );
-      ship.setOrigin(0.5, 0.5);
-      ship.setAngle(90);
-      ship.setAlpha(0.6);
+        const ship = this.lives.create(
+            startX + 45 * i,
+            y,
+            AssetType.Ship
+        ) as Phaser.GameObjects.Sprite;
+
+        ship.setOrigin(0.5, 0.5);
+
+        // If your ship image already faces upward, use 0.
+        ship.setAngle(0);
+
+        ship.setAlpha(1.0);
+        ship.setScale(1.0);
     }
-  }
+}
 
   setWinText() {
     this._setBigText("YOU WON!", "PRESS SPACE FOR NEW GAME");

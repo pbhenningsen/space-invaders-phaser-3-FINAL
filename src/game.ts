@@ -1,6 +1,8 @@
 import 'phaser';
+import { LogoScene } from "./scenes/logo-scene";
+import { MenuScene } from "./scenes/menu-scene"; 
 import { MainScene } from './scenes/main';
-import { GAME_WIDTH, GAME_HEIGHT } from './constants';
+import { GAME_WIDTH, GAME_HEIGHT } from './interface/constants';
 
 const config: Phaser.Types.Core.GameConfig = {
     title: "Space Invaders",
@@ -8,7 +10,7 @@ const config: Phaser.Types.Core.GameConfig = {
     backgroundColor: 'black',
     width: GAME_WIDTH,
     height: GAME_HEIGHT,
-    scene: MainScene,
+    scene: [LogoScene, MenuScene, MainScene],
     physics: {
         default: "arcade"
     },
@@ -17,8 +19,28 @@ const config: Phaser.Types.Core.GameConfig = {
 
 class SpaceInvadersGame extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
-        super(config)
+        super(config);
     }
 }
 
-const game = new SpaceInvadersGame(config);
+const startGame = () => {
+    new SpaceInvadersGame(config);
+};
+
+const fontDocument = document as Document & {
+    fonts?: {
+        load: (font: string) => Promise<unknown[]>;
+        ready?: Promise<unknown>;
+    };
+};
+
+if (fontDocument.fonts) {
+    Promise.all([
+        fontDocument.fonts.load("16px 'Pixelify Sans'"),
+        fontDocument.fonts.load("36px 'Pixelify Sans'")
+    ]).then(() => {
+        startGame();
+    });
+} else {
+    startGame();
+}

@@ -1,5 +1,7 @@
 import { Alien } from "../alien";
 import { AlienTextures } from "../assets";
+import { SoundType } from "../assets";
+
 
 export class AlienManager{
     aliens: Phaser.Physics.Arcade.Group;
@@ -8,11 +10,20 @@ export class AlienManager{
 
     private _direction: 1 | -1 = 1;
 
+    private _bassIndex = 0;
+
+    private readonly BASS_NOTES = [
+        SoundType.Bass1,
+        SoundType.Bass2,
+        SoundType.Bass3,
+        SoundType.Bass4,
+    ];
+
     private readonly COLS = 10;
     private readonly ROWS = 5;
 
     private readonly ORIGIN_X = 100;
-    private readonly ORIGIN_Y = 64;
+    private readonly ORIGIN_Y = 100;
 
     private readonly SPACING_X = 48;
     private readonly SPACING_Y = 50;
@@ -25,6 +36,9 @@ export class AlienManager{
 
     private readonly START_DELAY = 650;
     private readonly MIN_DELAY = 70;
+
+    private readonly ROW_STAGGER_DELAY = 100;//Raise this to 50 if you want the row stepping to be more obvious.
+    private _rowTimers: Phaser.Time.TimerEvent[] = [];
 
     private _startingAlienCount = this.COLS * this.ROWS;
 
@@ -58,10 +72,13 @@ export class AlienManager{
 
     reset() {
         this._moveTimer?.remove(false);
+        this._clearRowTimers();
+
         this._direction = 1;
         this._sortAliens();
         this._startMovement();
-    }
+        this._bassIndex = 0;
+        }
 
     private _sortAliens() {
         this.aliens.clear(true, true);
@@ -111,25 +128,65 @@ export class AlienManager{
             .getChildren()
             .filter(a => a.active) as Alien[];
 
-            if (aliveAliens.length === 0 ) {
-                return;
-            }
+        if (aliveAliens.length === 0) {
+            return;
+        }
 
-            const shouldDrop = this._formationWouldHitEdge(aliveAliens);
+        this._playBassNote();
 
-            if (shouldDrop) {
-                this._direction *= -1;
+        const shouldDrop = this._formationWouldHitEdge(aliveAliens);
 
-                aliveAliens.forEach(alien => {
-                    alien.y += this.DROP_Y;
-                });
-            }  else {
-                aliveAliens.forEach(alien => {
-                    alien.x += this.STEP_X * this._direction;
-                });
-            }
+        if (shouldDrop) {
+            this._direction *= -1;
+        }
 
-            this._scheduleNextStep();
+        const directionForThisStep = this._direction;
+
+        // Get only the rows that still have living aliens.
+        const livingRows = Array.from(
+            new Set(
+                aliveAliens.map(alien => alien.getData("row") as number)
+            )
+        );
+
+        // Top-to-bottom row movement.
+        // For bottom-to-top instead, change this to: b - a
+        livingRows.sort((a, b) => b - a);
+
+        this._clearRowTimers();
+
+        livingRows.forEach((row, index) => {
+            const timer = this._scene.time.delayedCall(
+                index * this.ROW_STAGGER_DELAY,
+                () => {
+                    const rowAliens = this.aliens
+                        .getChildren()
+                        .filter(a => {
+                            const alien = a as Alien;
+
+                            return (
+                                alien.active &&
+                                alien.getData("row") === row
+                            );
+                        }) as Alien[];
+
+                    rowAliens.forEach(alien => {
+                        if (shouldDrop) {
+                            alien.y += this.DROP_Y;
+                        } else {
+                            alien.x += this.STEP_X * directionForThisStep;
+                        }
+                    });
+
+                    // After the final row moves, schedule the next formation step.
+                    if (index === livingRows.length - 1) {
+                        this._scheduleNextStep();
+                    }
+                }
+            );
+
+            this._rowTimers.push(timer);
+        });
     }
 
     private _formationWouldHitEdge(aliveAliens: Alien[]): boolean {
@@ -143,6 +200,15 @@ export class AlienManager{
                 nextX + halfWidth >= this.RIGHT_BOUND
             );
         });
+    }
+    private _playBassNote() {
+        const note = this.BASS_NOTES[this._bassIndex];
+
+        this._scene.sound.play(note, {
+            volume: 0.65
+        });
+
+        this._bassIndex = (this._bassIndex + 1) % this.BASS_NOTES.length;
     }
 
     private _getCurrentMoveDelay(): number {
@@ -160,6 +226,14 @@ export class AlienManager{
         );
 
         return delay;
+    }
+    
+    private _clearRowTimers() {
+        this._rowTimers.forEach(timer => {
+            timer.remove(false);
+        });
+
+        this._rowTimers = [];
     }
 
     getRandomFrontAlien(): Alien | null {
