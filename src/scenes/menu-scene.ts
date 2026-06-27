@@ -11,7 +11,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.setBaseURL("assets");
+        this.load.setBaseURL("assets/");
 
         this.load.image(AssetType.GameLogo, "images/GameLogo.png")
     }

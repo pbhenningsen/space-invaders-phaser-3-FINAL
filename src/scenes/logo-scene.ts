@@ -9,7 +9,7 @@ export class LogoScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.setBaseURL("assets");
+        this.load.setBaseURL("assets/");
 
         this.load.image(AssetType.WoeLogo, "images/WoeLogo.png")
     }

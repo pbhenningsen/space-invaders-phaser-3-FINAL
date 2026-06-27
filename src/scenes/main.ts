@@ -39,7 +39,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.setBaseURL("assets");
+        this.load.setBaseURL("assets/");
         this.load.image(AssetType.Starfield, "images/starfield.png");
         this.load.image(AssetType.Bullet, "images/bullet.png");
         this.load.spritesheet(AssetType.EnemyBullet, "images/enemy-bullet.png", {
@@ -339,6 +339,7 @@ export class MainScene extends Phaser.Scene {
             if (this.scoreManager.noMoreLives) {
                 this.scoreManager.setGameOverText();
                 this.assetManager.gameOver();
+                this.mysteryManager.gameOver();
                 this.state = GameState.GameOver;
                 this.randomSoundManager.stop();
                 this.player.disableBody(true, true);
