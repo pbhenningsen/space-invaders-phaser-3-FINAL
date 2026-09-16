@@ -78,7 +78,7 @@ export class MainScene extends Phaser.Scene {
         this.load.audio(SoundType.Bass2, "audio/bass1.wav");
         this.load.audio(SoundType.Bass3, "audio/bass2.wav");
         this.load.audio(SoundType.Bass4, "audio/bass3.wav");
-        this.load.audio(SoundType.Gofast, "audio/Gofast.m4a");
+        this.load.audio(SoundType.Gofast, "audio/GoFast.m4a");
         this.load.audio(SoundType.Gimbal, "audio/Gimbal.m4a");
         this.load.audio(SoundType.UfoHighPitch, "audio/ufo_highpitch.wav");
     }

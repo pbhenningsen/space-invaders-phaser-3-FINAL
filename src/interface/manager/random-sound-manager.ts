@@ -65,7 +65,16 @@ export class RandomSoundManager {
             return;
         }
 
-        const soundKey = Phaser.Utils.Array.GetRandom(this.RANDOM_SOUNDS);
+        const availableSounds = this.RANDOM_SOUNDS.filter(key =>
+            this._scene.cache.audio.exists(key)
+        );
+
+        if (availableSounds.length === 0) {
+            this._scheduleNextSound();
+            return;
+        }
+
+        const soundKey = Phaser.Utils.Array.GetRandom(availableSounds);
 
         const sound = this._scene.sound.add(soundKey, {
             volume: 0.95
