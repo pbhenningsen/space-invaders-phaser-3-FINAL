@@ -291,6 +291,7 @@ export class MainScene extends Phaser.Scene {
 
     private _endGame(state: GameState) {
         this.state = state;
+        this.player.setVelocity(0, 0);
         this.assetManager.gameOver();
         this.mysteryManager.gameOver();
         this.alienManager.stop();
