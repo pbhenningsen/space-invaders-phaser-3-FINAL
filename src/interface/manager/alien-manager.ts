@@ -46,6 +46,24 @@ export class AlienManager{
         return this.aliens.countActive(true) > 0;
     }
 
+    get lowestAlienY(): number | null {
+        const aliveAliens = this.aliens
+            .getChildren()
+            .filter(a => a.active) as Alien[];
+
+        if (aliveAliens.length === 0) {
+            return null;
+        }
+
+        return Math.max(...aliveAliens.map(alien => alien.y));
+    }
+
+    stop() {
+        this._moveTimer?.remove(false);
+        this._moveTimer = undefined;
+        this._clearRowTimers();
+    }
+
     constructor(private _scene: Phaser.Scene) {
         this.aliens = this._scene.physics.add.group({
             maxSize: this.COLS * this.ROWS,

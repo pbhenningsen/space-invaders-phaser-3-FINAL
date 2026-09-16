@@ -156,6 +156,11 @@ export class MainScene extends Phaser.Scene {
 
     update() {
         this.starfield.tilePositionY -= 1;
+
+        if (this.state !== GameState.Playing) {
+            return;
+        }
+
         this._shipKeyboardHandler();
 
         if (this.time.now > this.firingTimer) {
@@ -203,7 +208,20 @@ export class MainScene extends Phaser.Scene {
         );
 
     this._checkEnemyBulletsHitBottomLine();
+    this._checkAliensReachedBottomLine();
 }
+
+    private _checkAliensReachedBottomLine() {
+        const lowestAlienY = this.alienManager.lowestAlienY;
+
+        if (lowestAlienY === null || lowestAlienY < GAME_HEIGHT - 40) {
+            return;
+        }
+
+        this.scoreManager.setGameOverText();
+        this._endGame(GameState.GameOver);
+        this.player.disableBody(true, true);
+    }
 
     private _bulletHitBarrier(bullet: Bullet, barrier: Barrier) {
         if (!bullet.active || !barrier.active) {
@@ -267,8 +285,16 @@ export class MainScene extends Phaser.Scene {
         if (!this.alienManager.hasAliveAliens) {
             this.scoreManager.increaseScore(1000);
             this.scoreManager.setWinText();
-            this.state = GameState.Win;
+            this._endGame(GameState.Win);
         }
+    }
+
+    private _endGame(state: GameState) {
+        this.state = state;
+        this.assetManager.gameOver();
+        this.mysteryManager.gameOver();
+        this.alienManager.stop();
+        this.randomSoundManager.stop();
     }
 
     
@@ -338,10 +364,7 @@ export class MainScene extends Phaser.Scene {
 
             if (this.scoreManager.noMoreLives) {
                 this.scoreManager.setGameOverText();
-                this.assetManager.gameOver();
-                this.mysteryManager.gameOver();
-                this.state = GameState.GameOver;
-                this.randomSoundManager.stop();
+                this._endGame(GameState.GameOver);
                 this.player.disableBody(true, true);
                 return;
             }
