@@ -24,7 +24,7 @@ class SpaceInvadersGame extends Phaser.Game {
 }
 
 const startGame = () => {
-    (window as any).__game = new SpaceInvadersGame(config);
+    new SpaceInvadersGame(config);
 };
 
 const fontDocument = document as Document & {
